@@ -14,13 +14,13 @@ public class ServoController {
         this.servoService = servoService;
     }
 
-    @GetMapping("/turnServoLeft")
+    @GetMapping("/turnLeft")
     public String turnLeft() {
         servoService.turnLeft();
         return "Servo turned left";
     }
 
-    @GetMapping("/turnServoRight")
+    @GetMapping("/turnRight")
     public String turnRight() {
         servoService.turnRight();
         return "Servo turned right";
