@@ -1,25 +1,38 @@
 package com.servo.servoAPI;
 
-import com.pi4j.io.gpio.*;
+import com.pi4j.Pi4J;
+import com.pi4j.context.Context;
+import com.pi4j.io.pwm.Pwm;
+import com.pi4j.io.pwm.PwmType;
+import com.pi4j.io.pwm.PwmProvider;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ServoService {
 
-    private final GpioController gpio;
-    private final GpioPinPwmOutput servoPin;
+    private final Context pi4j;
+    private final Pwm servoPwm;
 
     public ServoService() {
-        gpio = GpioFactory.getInstance();
-        servoPin = gpio.provisionPwmOutputPin(RaspiPin.GPIO_01); // Change GPIO pin as needed
-        servoPin.setPwm(0);
+        // Initialize Pi4J
+        pi4j = Pi4J.newAutoContext();
+
+        // Create PWM provider (Uses pigpio internally)
+        PwmProvider pwmProvider = pi4j.provider("pigpio-pwm");
+
+        // Provision PWM pin (GPIO 18 for example, update if needed)
+        servoPwm = pwmProvider.create(18, PwmType.HARDWARE, 50); // 50 Hz for servos
     }
 
     public void turnLeft() {
-        servoPin.setPwm(100); // Adjust PWM value as needed
+        servoPwm.on(5); // Adjust pulse width as needed
     }
 
     public void turnRight() {
-        servoPin.setPwm(200); // Adjust PWM value as needed
+        servoPwm.on(10); // Adjust pulse width as needed
+    }
+
+    public void stop() {
+        servoPwm.off();
     }
 }
